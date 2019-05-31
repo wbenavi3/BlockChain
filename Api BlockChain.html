@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>API (BlockChain)</title>
+<style type="text/css">
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000;
+}
+.www {
+	color: #F00;
+}
+.azul {
+	color: #00C;
+}
+.verde {
+	color: #0F0;
+}
+.blanco {
+	color: #FFF;
+	text-align: center;
+}
+.Negrito {
+	text-align: center;
+}
+</style>
+</head>
+
+<body>
+<p>&nbsp;</p>
+<table width="1045" border="0" align="center">
+  <tr>
+    <td bgcolor="#003399" class="blanco">BLOCKCHAIN</td>
+  </tr>
+  <tr>
+    <td class="Negrito">API</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="1041" border="1" align="center">
+  <tr>
+    <td width="121"><a href="#1">Class_Blockchain.vb </a></td>
+    <td width="120"><a href="#2">Class_Controlador.vb</a></td>
+    <td width="135"><a href="#3">Class_HashDirectory.vb</a></td>
+    <td width="102"><a href="#4">GenerateSHA512</a></td>
+    <td width="94"><a href="#5">Class_Nodo.vb</a></td>
+    <td width="116"><a href="#6">Class_sub_nodo.vb</a></td>
+    <td width="89"><a href="#7">Ws_Blockchain</a></td>
+    <td width="64"><a href="#8">DataTable</a></td>
+    <td width="142"><a href="#9">Function Registro_Block</a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB">///&lt;summary&gt;<a name="1"/><br />
+ /// Description de  la clase: Corresponde a la clase del blockchain de transacciones listadas por  el nodo<br />
+Carpeta Models:<br />
+--[VB] Class_Blockchain.vb<br />
+///&lt;/summary&gt;</td>
+  </tr>
+  <tr>
+    <td><p><span class="azul">Imports</span> System.Xml.Serialization</p>
+      <p>
+        <command class="www">&lt;XmlR</command>
+        oot(&quot;NewGroupName&quot;)&gt;<br />
+  &lt;XmlType(&quot;ArchivoXml&quot;)&gt;<br />
+        <span class="azul">Public Class</span><span class="verde"> Class_Blockchain</span><br />
+      <span class="azul">Property </span>Transacciones As IList(Of Class_Nodo)</p>
+    <p class="www"><span class="azul">End Class</span></p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB">///&lt;summary&gt;<a name="2" id="2"/></a><br />
+/// Description de  la clase: Corresponde a la clase del controlador la cual conserva  los valores contenidos en las variables  recibidas y las comparte en el archivo &ldquo;Prueba.txt&rdquo;.<br />
+Carpeta Models:<br />
+--[VB] Class_Controlador.vb<br />
+///&lt;/summary&gt;</td>
+  </tr>
+  <tr>
+    <td height="321"><p><span class="azul">Public Class</span> <span class="verde">Class_Controlador </span><br />
+        <span class="azul">Property</span> Dir1 <span class="azul">As String </span><br />
+        <span class="azul">Property</span> Dir2 <span class="azul">As String</span><br />
+        <span class="azul">Property</span> Nose<span class="azul"> As Integer </span><br />
+        <span class="azul">Property</span> Prev <span class="azul">As Integer </span><br />
+        <span class="azul">Property</span> Tranz<span class="azul"> As Integer </span><br />
+        <span class="azul">Property</span> Hash<span class="azul"> As String </span><br />
+        <span class="azul">Public Function</span> consulta() <span class="azul">As</span> Class_Controlador<br />
+        <span class="azul">Dim</span> Controla <span class="azul">As</span> Class_Controlador<br />
+        <span class="azul">Dim</span> request <span class="azul">As</span> HttpRequest<br />
+        <span class="azul">Dim</span> Url<span class="azul"> As String</span> = &quot;&quot; </p>
+      <p> <span class="azul">Dim</span> rutaGuardado<span class="azul"> As String</span> = <span class="www">&quot;C:\PruebUni\Prueba.txt&quot; </span><br />
+      <span class="azul">Dim</span> Ver<span class="azul"> As String</span> =  System.IO.File.ReadAllText(rutaGuardado)</p>
+      <p class="azul"> End Function </p>
+    <p class="azul">End Class </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB">///&lt;summary&gt;<a name="3" id="3"/></a><br />
+/// Description de la clase: Corresponde a la clase HashDirectory donde recibiendo  los valores desde las direcciones, para contenerlos en un bloque.<br />
+Carpeta Models:<br />
+--[VB] Class_HashDirectory.vb<br />
+///&lt;/summary&gt;</td>
+  </tr>
+  <tr>
+    <td height="286"><p><span class="azul">Imports</span> System<br />
+        <span class="azul">Imports</span> System.IO<br />
+        <span class="azul">Imports</span> System.Security.Cryptography<br />
+        <span class="azul">Public Class</span><span class="verde"> Class_HashDirectory </span><br />
+        <span class="azul">Public Shared Function</span> GenerateSHA256String(ByVal inputString) <span class="azul">As String </span><br />
+        <span class="azul">Dim</span> sha256 As SHA256 =  SHA256Managed.Create()<br />
+        <span class="azul">Dim</span> bytes As Byte() =  Encoding.UTF8.GetBytes(inputString)<br />
+        <span class="azul">Dim</span> hash As Byte() =  sha256.ComputeHash(bytes)<br />
+        <span class="azul">Dim</span> stringBuilder As New  StringBuilder()</p>
+      <p>       <span class="azul"> For i</span> <span class="azul">As Integer</span> = 0 <span class="azul">To</span> hash.Length -  1<br />
+        stringBuilder.Append(hash(i).ToString(&quot;X2&quot;))<br />
+      Next </p>
+      <p>        <span class="azul">Return </span>stringBuilder.ToString()<br />
+      <span class="azul">End Function</span></p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB">///&lt;summary&gt;<a name="4" id="4"/></a><br />
+/// Description de la clase: Corresponde a una segunda función de  la clase HashDirectory donde recibiendo los  valores de unas nuevas direcciones, que se quedan en cola para ser contenidas  en un bloque.<br />
+Carpeta Models:<br />
+--[VB] Class_HashDirectory.vb<br />
+///&lt;/summary&gt;</td>
+  </tr>
+  <tr>
+    <td height="252"><p><span class="azul">Public Shared Function</span><span class="verde"> GenerateSHA512</span>String(<span class="azul">ByVal</span> inputString)<span class="azul"> As String </span><br />
+        <span class="azul">Dim</span> sha512 As SHA512 =  SHA512Managed.Create()<br />
+        <span class="azul">Dim</span> bytes <span class="azul">As Byte()</span> =  Encoding.UTF8.GetBytes(inputString)<br />
+        <span class="azul">Dim</span> hash <span class="azul">As Byte()</span> =  sha512.ComputeHash(bytes)<br />
+        <span class="azul">Dim</span> stringBuilder<span class="azul"> As New</span> StringBuilder()</p>
+      <p>       <span class="azul"> For i</span> As Integer = 0 <span class="azul">To</span> hash.Length -  1<br />
+        stringBuilder.Append(hash(i).ToString(&quot;X2&quot;))<br />
+        <span class="azul">Next </span></p>
+      <p>        <span class="azul">Return</span> stringBuilder.ToString()<br />
+        <span class="azul">End Function <br />
+    End Class</span></p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB"><p>///&lt;summary&gt;<a name="5" id="5"/></a><br />
+      /// Description de  la clase: Corresponde a la clase Nodo, en la cual se determina las variables  que generarían la creación de un nuevo nodo. <br />
+      Carpeta Models:<br />
+      --[VB] Class_Nodo.vb</p>
+    <p>///&lt;/summary&gt;</p></td>
+  </tr>
+  <tr>
+    <td height="207"><p><span class="azul">Public Class </span><span class="verde">Class_Nodo </span><br />
+        <span class="azul">Property </span>Numero_Nodo<br />
+        <span class="azul">Property</span> Dir1 As String <br />
+        <span class="azul">Property </span>Dir2 As String <br />
+        <span class="azul">Property</span> Nose As Integer <br />
+        <span class="azul">Property</span> Prev As Integer <br />
+        <span class="azul">Property</span> Hash As String <br />
+        <span class="azul">Property</span> Estado As Boolean = True </p>
+      <p>    Property Sub_nodos<span class="azul"> As List</span>(Of  Class_sub_nodo)</p>
+    <p class="azul">End Class</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB"><p>///&lt;summary&gt;<a name="6" id="6"/></a><br />
+/// Description de  la clase: Corresponde a la clase creada Sub_nodo, donde cumpliendo con la recepción  del valor para cada dirección se define el nodo.Carpeta Models:<br />
+--[VB] Class_sub_nodo.vb</p>
+    <p>///&lt;/summary&gt;</p></td>
+  </tr>
+  <tr>
+    <td height="83"><p><span class="azul">Public Class</span> <span class="verde">Class_sub_nodo</span><br />
+        <span class="azul">Property</span> Numero As Integer <br />
+        <span class="azul">Property</span> valor_Transacion</p>
+    <p class="azul">End Class </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB"><p>///&lt;summary&gt;<a name="7" id="7"/></a><br />
+/// Description : Se  presenta todo el proceso de recepción del nodo, creación del bloque y permisividad  para nuevas consultas.<br />
+Carpeta Web_Service:<br />
+--[VB] Ws_Blockchain.asmx<br />
+///&lt;/summary&gt;</p></td>
+  </tr>
+  <tr>
+    <td height="83"><p><span class="azul">Imports</span> System.Web.Services<br />
+        <span class="azul">Imports</span> System.Web.Services.Protocols<br />
+        <span class="azul">Imports</span> System.IO<br />
+        <span class="azul">Imports</span> System.ComponentModel<br />
+        <span class="azul">Imports </span>System.Linq<br />
+        <span class="azul">Imports</span> System<br />
+        <span class="azul">Imports</span> System.Collections.Generic<br />
+        <span class="azul">Imports</span> Microsoft.Ajax.Utilities</p>
+      <p>&lt;System.Web.Services.WebService(Namespace:=&quot;http://tempuri.org/&quot;)&gt;<br />
+  &lt;System.Web.Services.WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)&gt;<br />
+  &lt;ToolboxItem(False)&gt;<br />
+        <span class="azul">Public Class</span><span class="verde"> Ws_Blockchain </span><br />
+        Inherits System.Web.Services.WebService</p>
+      <p>    &lt;WebMethod()&gt;<br />
+        <span class="azul">Public Function</span> Crear_Block(Id_bloque As String, traza As Integer)<span class="azul"> As String </span><br />
+        ' nonce As Integer, nonce As String, hash <span class="azul">As String </span></p>
+      <p>        'Crear_Archivo(&quot;C:\PruebUni\&quot;,  &quot;Rg_block.txt&quot;) <br />
+        'My.Computer.FileSystem.WriteAllText(&quot;C:\PruebUni\&quot;  &amp; &quot;Rg_block.txt&quot;, Id_bloque &amp; &quot; &quot; &amp; traza,  False) </p>
+      <p> <span class="azul">Dim</span> resA As String <br />
+        <span class="azul">Dim</span> ArchivoXml As New List(Of  Class_Blockchain)<br />
+        <span class="azul">Dim</span> Nsub_N As Integer = 1<br />
+        <span class="azul">'Dim</span> Archivo As New List(Of Class_Controlador) <br />
+        <span class="azul">Dim</span> Block_Chain As New  Class_Blockchain<br />
+        <span class="azul">Block_Chain.Transacciones</span> = New List(Of Class_Nodo)<br />
+        <span class="azul">Block_Chain.Transacciones.Add</span>(New Class_Nodo With {.Numero_Nodo = 1, .Sub_nodos = New List(Of Class_sub_nodo)})<br />
+        <span class="azul">Block_Chain.Transacciones.ForEach</span>(Sub(item)<br />
+        item.Numero_Nodo = 1<br />
+        item.Dir1 = &quot;123&quot; <br />
+        item.Dir2 = &quot;456&quot; <br />
+        item.Nose = &quot;00&quot; <br />
+        item.Prev = &quot;234&quot; <br />
+        item.Hash = &quot;0000343&quot; <br />
+        item.Sub_nodos = New List(Of Class_sub_nodo)<br />
+        item.Sub_nodos.Add(New Class_sub_nodo With {.Numero = 1, .valor_Transacion = 100000})<br />
+        item.Sub_nodos.Add(New Class_sub_nodo With {.Numero = 2, .valor_Transacion = 300000})<br />
+        item.Sub_nodos.Add(New Class_sub_nodo With {.Numero = 3, .valor_Transacion = 150000})<br />
+        End Sub)<br />
+        <span class="azul">Block_Chain.Transacciones.ForEach</span>(Sub(item)<br />
+        <span class="azul">If </span>item.Sub_nodos.Count = 3 Then <br />
+        item.Estado = False <br />
+        <span class="azul">Else </span><br />
+        item.Sub_nodos.Add(New Class_sub_nodo With {.Numero = 4, .valor_Transacion = 900000})<br />
+      <span class="azul">End If </span></p>
+    <p> <span class="azul"> End Sub)</span></p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB"><p>///&lt;summary&gt;<a name="8" id="8"/></a><br />
+/// Description : En  prueba se comparte el registro de valores predefinidos para cada variable; esto  para generar la creación de un nodo.<br />
+Carpeta Web_Service:<br />
+--[VB] Ws_Blockchain.asmx<br />
+///&lt;/summary&gt;</p></td>
+  </tr>
+  <tr>
+    <td height="83"><p> Dim Block<span class="azul"> As New</span><span class="verde"> DataTable</span><br />
+'Block.Columns.Add(&quot;Dir1&quot;) <br />
+'Block.Columns.Add(&quot;nonce&quot;) <br />
+'Block.Columns.Add(&quot;Traz&quot;) <br />
+'Block.Columns.Add(&quot;prev&quot;) <br />
+'Block.Columns.Add(&quot;hash&quot;) <br />
+'Dim Row<span class="azul"> As</span> DataRow = Block.NewRow() <br />
+'Row(&quot;Dir1&quot;) = &quot;123&quot; <br />
+'Row(&quot;nonce&quot;) = &quot;25&quot; <br />
+'Row(&quot;Traz&quot;)  = &quot;2500&quot; <br />
+'Row(&quot;hash&quot;) = &quot;321&quot; <br />
+'Block.Rows.Add(Row) <br />
+'Row = Block.NewRow() <br />
+'Row(&quot;Dir1&quot;) = &quot;125&quot; <br />
+'Row(&quot;nonce&quot;) = &quot;56&quot; <br />
+'Row(&quot;Traz&quot;) = &quot;500&quot; <br />
+'Row(&quot;hash&quot;) = &quot;521&quot; <br />
+'Block.Rows.Add(Row) <br />
+<span class="azul">'ArchivoXml </span>= (From Reguitro In Block.AsEnumerable Select  New Class_Blockchain With { <br />
+'                 .Dir1 =  Reguitro(&quot;Dir1&quot;), <br />
+'                 .Nose =  Reguitro(&quot;nonce&quot;), <br />
+'                 .Tranz =  Reguitro(&quot;Traz&quot;) <br />
+'}).ToList </p>
+      <p>        'Dim x As New  System.Xml.Serialization.XmlSerializer(ArchivoXml.GetType) <br />
+        'Dim msA <span class="azul">As MemoryStream</span> = New MemoryStream() <br />
+        'x.Serialize(msA, ArchivoXml) <br />
+        'Dim JJA As Byte() = msA.ToArray() <br />
+        'msA.Close() <br />
+        'resA = Encoding.UTF8.GetString(JJA, 0, JJA.Length) <br />
+        'Dim rutaGuardado <span class="azul">As String </span>=  <span class="www">&quot;C:\PruebUni\Block.xml&quot; </span><br />
+        ''My.Computer.FileSystem.DeleteFile(rutaGuardado, resA,  True) <br />
+        'If (System.IO.File.Exists(rutaGuardado)) Then <br />
+        '     System.IO.File.Delete(rutaGuardado) <br />
+        'End If <br />
+      'My.Computer.FileSystem.WriteAllText(rutaGuardado, resA,  True) </p>
+      <p>        'Dim Vl <span class="azul">As String</span> =  Class_HashDirectory.GenerateSHA256String(&quot;abc&quot;) </p>
+      <p>        'Return Vl <br />
+      <span class="azul">End Function </span></p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="895" border="1" align="center">
+  <tr>
+    <td width="885" bgcolor="#DBDBDB"><p>///&lt;summary&gt;<a name="9" id="82"/></a><br />
+/// Description : Se  contienen la cantidad suficiente de nodos (3) para realizar la creación de un  nuevo bloque.<br />
+Carpeta Web_Service:<br />
+--[VB] Ws_Blockchain.asmx<br />
+///&lt;/summary&gt;</p></td>
+  </tr>
+  <tr>
+    <td height="527"><p>&lt;WebMethod()&gt;<br />
+        <span class="azul">Public Function</span> Registro_Block(Id_has As String)<span class="azul"> As String </span></p>
+      <p> Return &quot;Consulta&quot; <br />
+        End Function <br />
+  &lt;WebMethod()&gt;<br />
+        Public Function Consulta_Traza(<span class="azul">Id_has As Integer</span>) As String </p>
+      <p>Return &quot;Consulta&quot; <br />
+        <span class="azul">End Function </span></p>
+      <p>&lt;WebMethod()&gt;<br />
+        <span class="azul">Public Function</span><span class="verde"> Consulta_Block</span>(Id_has As String) As String </p>
+      <p> Return &quot;Consulta&quot; <br />
+        <span class="azul">End Function </span></p>
+      <p>  <span class="azul"> Public Shared Function</span> Crear_Archivo(ByVal Ruta<span class="azul"> As String</span>, ByVal Nom_Archivo As String)<span class="azul"> As Boolean </span><br />
+        Try <br />
+        Dim create As StreamWriter<br />
+        <span class="azul">If Not  IO.File.Exists</span>(Ruta &amp; &quot;\&quot; &amp; Nom_Archivo) Then <br />
+        create =  IO.File.CreateText(Ruta &amp; &quot;\&quot; &amp; Nom_Archivo)<br />
+        create.Flush() : create.Close()<br />
+        <span class="azul">End If </span><br />
+        <span class="azul">Return True </span><br />
+        Catch ex As Exception<br />
+        <span class="azul">Return False </span><br />
+        <span class="azul">End Try </span><br />
+        <span class="azul">End Function </span></p>
+      <p class="azul">End Class </p>
+      <p><br />
+    </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>   <br />
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
